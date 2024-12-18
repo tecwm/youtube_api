@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>YouTube API Example</title>
+  <script src="https://apis.google.com/js/api.js"></script>
+  <style>
+    .video-container {
+      margin: 20px;
+    }
+    .video-item {
+      margin: 10px 0;
+    }
+  </style>
+</head>
+<body>
+  <h1>YouTube Video Search</h1>
+  <div id="videos" class="video-container"></div>
+
+  <script>
+    // APIキーとクエリの設定
+    const apiKey = 'AIzaSyBcvJRn1_s9P9rk3asST1BQFurQUTvjB5g'; // ここに自分のAPIキーを入力
+    const query = 'JavaScript tutorials';
+
+    // APIの初期化
+    function loadYouTubeAPI() {
+      // YouTube Data API v3をロード
+      gapi.client.load('youtube', 'v3', function() {
+        gapi.client.setApiKey(apiKey); // APIキーを設定
+        searchVideos(query); // APIがロードされた後に検索
+      });
+    }
+
+    // 動画を検索する関数
+    function searchVideos(query) {
+      gapi.client.youtube.search.list({
+        'part': 'snippet',
+        'q': query,
+        'maxResults': 10, // 最大10件の結果を取得
+      }).then(function(response) {
+        displayVideos(response.result.items);
+      }).catch(function(error) {
+        console.error('Error fetching videos:', error);
+      });
+    }
+
+    // 動画情報を画面に表示
+    function displayVideos(videos) {
+      const container = document.getElementById('videos');
+      container.innerHTML = ''; // 既存の内容をクリア
+
+      // 取得した動画をリスト表示
+      videos.forEach(function(video) {
+        const videoItem = document.createElement('div');
+        videoItem.classList.add('video-item');
+
+        const title = document.createElement('h3');
+        title.textContent = video.snippet.title;
+        videoItem.appendChild(title);
+
+        const description = document.createElement('p');
+        description.textContent = video.snippet.description;
+        videoItem.appendChild(description);
+
+        const thumbnail = document.createElement('img');
+        thumbnail.src = video.snippet.thumbnails.medium.url;
+        thumbnail.alt = video.snippet.title;
+        videoItem.appendChild(thumbnail);
+
+        container.appendChild(videoItem);
+      });
+    }
+
+    // ページが読み込まれたらYouTube APIを初期化
+    function init() {
+      gapi.load('client', loadYouTubeAPI); // YouTube APIの読み込み
+    }
+
+    // ページ読み込み時に初期化関数を実行
+    window.onload = init;
+  </script>
+</body>
+</html>
