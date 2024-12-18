@@ -28,7 +28,7 @@
 <body>
   <h1>YouTube Video Search</h1>
   
-  <!-- 検索フォームの追加 -->
+  <!-- 検索フォーム -->
   <div>
     <input type="text" id="searchQuery" placeholder="検索キーワードを入力">
     <button onclick="handleSearch()">検索</button>
@@ -60,6 +60,24 @@
       });
     }
 
+    // チャンネル情報を取得して登録者数を表示
+    function getChannelInfo(channelId, videoItem) {
+      gapi.client.youtube.channels.list({
+        'part': 'statistics',
+        'id': channelId
+      }).then(function(response) {
+        const channel = response.result.items[0];
+        const subscriberCount = channel.statistics.subscriberCount;
+        
+        // 登録者数を動画情報に追加
+        const subscriberCountElement = document.createElement('p');
+        subscriberCountElement.textContent = `登録者数: ${subscriberCount}`;
+        videoItem.appendChild(subscriberCountElement);
+      }).catch(function(error) {
+        console.error('Error fetching channel info:', error);
+      });
+    }
+
     // 動画情報を画面に表示
     function displayVideos(videos) {
       const container = document.getElementById('videos');
@@ -70,40 +88,4 @@
         const videoItem = document.createElement('div');
         videoItem.classList.add('video-item');
 
-        const title = document.createElement('h3');
-        title.textContent = video.snippet.title;
-        videoItem.appendChild(title);
-
-        const description = document.createElement('p');
-        description.textContent = video.snippet.description;
-        videoItem.appendChild(description);
-
-        const thumbnail = document.createElement('img');
-        thumbnail.src = video.snippet.thumbnails.medium.url;
-        thumbnail.alt = video.snippet.title;
-        videoItem.appendChild(thumbnail);
-
-        container.appendChild(videoItem);
-      });
-    }
-
-    // 検索ボタンがクリックされたときに呼ばれる関数
-    function handleSearch() {
-      const query = document.getElementById('searchQuery').value;
-      if (query) {
-        searchVideos(query); // 検索クエリを使って動画を検索
-      } else {
-        alert('検索キーワードを入力してください');
-      }
-    }
-
-    // ページが読み込まれたらYouTube APIを初期化
-    function init() {
-      gapi.load('client', loadYouTubeAPI); // YouTube APIの読み込み
-    }
-
-    // ページ読み込み時に初期化関数を実行
-    window.onload = init;
-  </script>
-</body>
-</html>
+        const title = document.cr
