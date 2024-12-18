@@ -12,32 +12,47 @@
     .video-item {
       margin: 10px 0;
     }
+    input[type="text"] {
+      padding: 8px;
+      font-size: 16px;
+      width: 300px;
+      margin-right: 10px;
+    }
+    button {
+      padding: 8px 16px;
+      font-size: 16px;
+      cursor: pointer;
+    }
   </style>
 </head>
 <body>
   <h1>YouTube Video Search</h1>
+  
+  <!-- æ¤œç´¢ãƒ•ã‚©ãƒ¼ãƒ ã®è¿½åŠ  -->
+  <div>
+    <input type="text" id="searchQuery" placeholder="æ¤œç´¢ã‚­ãƒ¼ãƒ¯ãƒ¼ãƒ‰ã‚’å…¥åŠ›">
+    <button onclick="handleSearch()">æ¤œç´¢</button>
+  </div>
+
   <div id="videos" class="video-container"></div>
 
   <script>
-    // APIƒL[‚ÆƒNƒGƒŠ‚Ìİ’è
-    const apiKey = 'AIzaSyBcvJRn1_s9P9rk3asST1BQFurQUTvjB5g'; // ‚±‚±‚É©•ª‚ÌAPIƒL[‚ğ“ü—Í
-    const query = 'JavaScript tutorials';
+    // APIã‚­ãƒ¼ã¨åˆæœŸè¨­å®š
+    const apiKey = 'AIzaSyBcvJRn1_s9P9rk3asST1BQFurQUTvjB5g'; // ã“ã“ã«è‡ªåˆ†ã®APIã‚­ãƒ¼ã‚’å…¥åŠ›
 
-    // API‚Ì‰Šú‰»
+    // APIã®åˆæœŸåŒ–
     function loadYouTubeAPI() {
-      // YouTube Data API v3‚ğƒ[ƒh
       gapi.client.load('youtube', 'v3', function() {
-        gapi.client.setApiKey(apiKey); // APIƒL[‚ğİ’è
-        searchVideos(query); // API‚ªƒ[ƒh‚³‚ê‚½Œã‚ÉŒŸõ
+        gapi.client.setApiKey(apiKey); // APIã‚­ãƒ¼ã‚’è¨­å®š
       });
     }
 
-    // “®‰æ‚ğŒŸõ‚·‚éŠÖ”
+    // å‹•ç”»ã‚’æ¤œç´¢ã™ã‚‹é–¢æ•°
     function searchVideos(query) {
       gapi.client.youtube.search.list({
         'part': 'snippet',
         'q': query,
-        'maxResults': 10, // Å‘å10Œ‚ÌŒ‹‰Ê‚ğæ“¾
+        'maxResults': 10, // æœ€å¤§10ä»¶ã®çµæœã‚’å–å¾—
       }).then(function(response) {
         displayVideos(response.result.items);
       }).catch(function(error) {
@@ -45,12 +60,12 @@
       });
     }
 
-    // “®‰æî•ñ‚ğ‰æ–Ê‚É•\¦
+    // å‹•ç”»æƒ…å ±ã‚’ç”»é¢ã«è¡¨ç¤º
     function displayVideos(videos) {
       const container = document.getElementById('videos');
-      container.innerHTML = ''; // Šù‘¶‚Ì“à—e‚ğƒNƒŠƒA
+      container.innerHTML = ''; // æ—¢å­˜ã®å†…å®¹ã‚’ã‚¯ãƒªã‚¢
 
-      // æ“¾‚µ‚½“®‰æ‚ğƒŠƒXƒg•\¦
+      // å–å¾—ã—ãŸå‹•ç”»ã‚’ãƒªã‚¹ãƒˆè¡¨ç¤º
       videos.forEach(function(video) {
         const videoItem = document.createElement('div');
         videoItem.classList.add('video-item');
@@ -72,12 +87,22 @@
       });
     }
 
-    // ƒy[ƒW‚ª“Ç‚İ‚Ü‚ê‚½‚çYouTube API‚ğ‰Šú‰»
-    function init() {
-      gapi.load('client', loadYouTubeAPI); // YouTube API‚Ì“Ç‚İ‚İ
+    // æ¤œç´¢ãƒœã‚¿ãƒ³ãŒã‚¯ãƒªãƒƒã‚¯ã•ã‚ŒãŸã¨ãã«å‘¼ã°ã‚Œã‚‹é–¢æ•°
+    function handleSearch() {
+      const query = document.getElementById('searchQuery').value;
+      if (query) {
+        searchVideos(query); // æ¤œç´¢ã‚¯ã‚¨ãƒªã‚’ä½¿ã£ã¦å‹•ç”»ã‚’æ¤œç´¢
+      } else {
+        alert('æ¤œç´¢ã‚­ãƒ¼ãƒ¯ãƒ¼ãƒ‰ã‚’å…¥åŠ›ã—ã¦ãã ã•ã„');
+      }
     }
 
-    // ƒy[ƒW“Ç‚İ‚İ‚É‰Šú‰»ŠÖ”‚ğÀs
+    // ãƒšãƒ¼ã‚¸ãŒèª­ã¿è¾¼ã¾ã‚ŒãŸã‚‰YouTube APIã‚’åˆæœŸåŒ–
+    function init() {
+      gapi.load('client', loadYouTubeAPI); // YouTube APIã®èª­ã¿è¾¼ã¿
+    }
+
+    // ãƒšãƒ¼ã‚¸èª­ã¿è¾¼ã¿æ™‚ã«åˆæœŸåŒ–é–¢æ•°ã‚’å®Ÿè¡Œ
     window.onload = init;
   </script>
 </body>
