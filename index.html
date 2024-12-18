@@ -31,7 +31,7 @@
   <!-- 検索フォーム -->
   <div>
     <input type="text" id="searchQuery" placeholder="検索キーワードを入力">
-    <button onclick="handleSearch()">検索</button>
+    <button id="searchButton">検索</button>
   </div>
 
   <div id="videos" class="video-container"></div>
@@ -126,6 +126,10 @@
     // ページが読み込まれたらYouTube APIを初期化
     function init() {
       gapi.load('client', loadYouTubeAPI); // YouTube APIの読み込み
+
+      // 検索ボタンにイベントリスナーを追加
+      const searchButton = document.getElementById('searchButton');
+      searchButton.addEventListener('click', handleSearch);
     }
 
     // ページ読み込み時に初期化関数を実行
